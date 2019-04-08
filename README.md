@@ -11,6 +11,7 @@ WORK IN PROGRESS, SPEC VERSION 0
 ## Mod File
 
 - `specVersion` (Integer) (Required): The spec version this file follows.
+- `type` (String) (IgnoreCase): The type this "mod" is, `mod`, `modloader`, `jarmod`. Defaults to `mod`
 - `id` (String) (Required): A unique id that identifies this mod within the network. Does not have to be the mod id but it can be.
 - `name` (String): A simple name that can be displayed to the user.
 - `description` (String): A short description on what the mod does or is.
@@ -51,6 +52,33 @@ WORK IN PROGRESS, SPEC VERSION 0
   - `id` (String) (Required): The hash.
 
 
+## Modloader Extensions (Extends Version File)
+WIP
+- MainClass
+- Libraries
+- 
+
+## Extra Information
 ### Version Match
 WIP
 maybe something like https://fabricmc.net/wiki/format:modjson#versionrange
+
+##### Fabric
+Fabric is split into three parts:
+- Fabric Loader (fabricloader) (loads fabric/mappings/mods)
+- Yarn (yarn) (mappings)
+- Fabric API (fabric) (useful api for mod developers, not required but almost always used)
+
+##### Forge
+Forge requires alot more than fabric, investigation pending...
+- https://github.com/MinecraftForge/Installer
+- https://github.com/MinecraftForge/InstallerTools
+
+### TODO/Notes
+- Modloader spec requirements
+- Alpha/Beta/Stable/Recommended version types
+- `mods` to `packages`, since a package could be not a `mod`
+- `specVersion` vs `formatVersion`
+- `id` vs `uid`
+- `modname.` vs `package.`
+- `versions.json` vs `index.json`
