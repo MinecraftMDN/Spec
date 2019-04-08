@@ -40,12 +40,12 @@ WORK IN PROGRESS, SPEC VERSION 0
   - `id` (String) (Required): The mod id.
   - `version` (String or Array of Strings): The version to match. See `Version Match` below for more information
 
-- `downloads` (Array) (Required): An Array of Download Objects.
-  ##### Download Objects
-  - `type` (String) (Required) (IgnoreCase): The type of download or download service the file can be gotten from, such as `direct` for a direct url download.
-  - `id` (String) (Required): The id that identifies the file with the service, could be a URL.
+- `artifacts` (Array) (Required): An Array of Artifact Objects.
+  ##### Artifact Objects
+  - `type` (String) (Required) (IgnoreCase): The type of download or download service the artifact can be gotten from, such as `direct` for a direct url download.
+  - `id` (String) (Required): The id that identifies the artifact with the service, could be a URL/file id/maven id.
 
-- `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded files.
+- `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact.
   ##### Hash Object
   - `type` (String) (Required) (IgnoreCase): The type of hash this is, for example `sha256`.
   - `id` (String) (Required): The hash.
