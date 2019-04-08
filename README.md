@@ -33,6 +33,7 @@ WORK IN PROGRESS, SPEC VERSION 0
 - `specVersion` (Integer) (Required): The spec version this file follows.
 - `id` (String) (Required): A mod unique identifier that identifies this version within the network. Should match the version found within the file.
 - `changelog` (String): A url to a changelog file.
+- `side` (String): One of `client`, `server` or `universal`. Default is universal
 - `relationships` (Array): An Array of Relationship Objects.
   ##### Relationship Object
   - `type` (String) (Required) (IgnoreCase): Either `required`, `recommended`, `suggested`, `conflicts`, `breaks`.
