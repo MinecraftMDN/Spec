@@ -32,9 +32,9 @@ A Version represents a single artifact, such as a .jar file.
   ##### ProjectLink Object
   - `type` (String) (Required) (IgnoreCase): An identifier that describes the url, such as `Discord` for a discord invite link.
   - `url` (String) (Required): A url that the user can go to. Follows the pattern `todo`.
-- `indexers` (Array): An Array of Indexer Objects, that contains information on how `Artifacts` could be automatically discovered by a bot that generates `Version` files.
-  ##### Indexer Object
-  - `type` (String) (Required) (IgnoreCase): The identifier of the service.
+- `detectors` (Array): An Array of Detector Objects, that contains information on how `Artifacts` could be automatically discovered by a bot that generates `Version` files.
+  ##### Detector Object
+  - `type` (String) (Required) (IgnoreCase): The identifier of the detector service.
   - `data` (Object) (Required): Service specific data that is used by the service. This is outside the control of this spec.
 
 
@@ -42,6 +42,7 @@ A Version represents a single artifact, such as a .jar file.
 ###### id.json inside the `Package` folder. Where `id` is the version id.
 
 - `id` (String) (Required): A `Package` unique identifier that identifies this `Version` within the network. Should match the `id` of the file.
+- `releasetype` (String): One of `release` or `beta`.
 - `changelog` (String): A url to a changelog file.
 - `side` (String): One of `client`, `server` or `universal`. Default is universal.
 - `relationships` (Array): An Array of Relationship Objects.
@@ -60,21 +61,56 @@ A Version represents a single artifact, such as a .jar file.
 
 
 ## (WIP) Modloader Version Extensions
-###### Extends Version File. Mod File MUST have `type` set to `modloader`
-MainClass (Object) (IgnoreCase): 
-  - `Common`: Main class used for both client and server.
-  - `Client`: Main class used for client only.
-  - `Server`: Main class used for server only.
-- Libraries
-- LaunchArgs
+###### Extends Version File. Package MUST have `type` set to `modloader`
+- `mainclass` (Object) (IgnoreCase): 
+  - `common`: Main class used for both client and server.
+  - `client`: Main class used for client only.
+  - `server`: Main class used for server only.
+- `libraries` (Array): Array of `Library` Objects.
+  ##### Library Object
+  - `id` (String) (Required): Maven ID.
+  - `url` (String) (Required): Maven Repository its stored in.
+  - `side` (String): Either `client`, `server`, or `common`. Default `common`.
+  - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact. At least one hash MUST be provided. Prefer sha256.
+    ##### Hash Object
+    - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
+    - `id` (String) (Required): The hash.
+- `launchargs` (Object):
+  - `client` (String): Launch arguments for the client only.
+  - `server` (String): Launch arguments for the server only.
+  - `common` (String): Launch arguments for the client & server.
+- `tweakers` (Object):
+  - `client` (Array of Strings): Tweakers for the client only.
+  - `server` (Array of Strings): Tweakers for the server only.
+  - `common` (Array of Strings): Tweakers for the client & server.
 
+## (WIP) Minecraft Version Extensions
+###### Extends Version File. Package MUST have `type` set to `minecraft`.
+- `releasetype` (String): One of `release`, `snapshot`, `beta`, `alpha`.
+- `mainclass` (Object) (IgnoreCase): 
+  - `common`: Main class used for both client and server.
+  - `client`: Main class used for client only.
+  - `server`: Main class used for server only.
+- `libraries` (Array): Array of `Library` Objects.
+  ##### Library Object
+  - `id` (String) (Required): Maven ID.
+  - `url` (String) (Required): Maven Repository its stored in.
+  - `side` (String): Either `client`, `server`, or `common`. Default `common`.
+  - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact. At least one hash MUST be provided. Prefer sha256.
+    ##### Hash Object
+    - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
+    - `id` (String) (Required): The hash.
+- `launchargs` (Object):
+  - `client` (String): Launch arguments for the client only.
+  - `server` (String): Launch arguments for the server only.
+  - `common` (String): Launch arguments for the client & server.
 
 ## Extra Information
 ### Mod Type
 - `Mod`: The default type. The `Artifact` would be placed in the `mods` folder.
-- `Jarmod`: A jarmod gets inserted into the minecraft.jar and is how a lot of older mods are installed.
 - `Modloader`: Specifies this is a modloader and uses the `Modloader Version Extensions` spec.
-- `Library` (WIP): If a mod is declared as a Library, then it can only be used by modloaders using the `Libraries` key in the `Modloader Version Extensions` spec. 
+- `Library` (WIP): If a mod is declared as a Library, then it can only be used by modloaders using the `Libraries` key in the `Modloader Version Extensions` spec.
+- `Minecraft`: Only used by Minecraft files.
 It would allow the user to select a different version, but CANNOT be installed manually.
 
 ### Relationship Management
@@ -94,19 +130,22 @@ maybe something like https://fabricmc.net/wiki/format:modjson#versionrange
 - Modloader spec requirements
 - Modpack spec
 - Alpha/Beta/Stable/Recommended version types
+- Tags for Mods
 - `specVersion` vs `formatVersion`
 - `id` vs `uid`
-- `modname.` vs `package.`
-- `versions.json` vs `index.json`
+- hash to package+version database (something like "sha256:somehash":"amod:1.0.0")
+- cf slug to package database
+- cf id to package database
+- Remove `discoverers` from the spec and only use for upstream/intermediary usage?
 
 ##### Fabric
 Fabric is split into three parts:
 - Fabric Loader (fabricloader) (loads fabric/mappings/mods)
 - Yarn (yarn) (mappings)
 - Fabric API (fabric) (useful api for mod developers, not required but almost always used)
+Fabric Loader will need a custom script to get all the information required.
 
 ##### Forge
 Forge requires alot more than fabric, investigation pending...
 - https://github.com/MinecraftForge/Installer
 - https://github.com/MinecraftForge/InstallerTools
-
