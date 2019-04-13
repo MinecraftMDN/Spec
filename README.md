@@ -16,7 +16,7 @@ A Version represents a single artifact, such as a .jar file.
 
 ## ALL Files
 ###### These are things EVERY file MUST contain.
-- `specVersion` (Integer) (Required): The spec version the file follows.
+- `specVersion` (Number) (Required): The spec version the file follows.
 
 
 ## Package File
@@ -54,10 +54,14 @@ A Version represents a single artifact, such as a .jar file.
   ##### Artifact Objects
   - `type` (String) (Required) (IgnoreCase): The type of download or download service the `Artifact` can be gotten from, such as `direct` for a direct url download.
   - `id` (String) (Required): The id that identifies the `Artifact` with the service, could be a URL/file id/maven id.
+  - `side` (String): One of `client`/`server`/`common`. Default is `common`.
 - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact.
   ##### Hash Object
   - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
   - `id` (String) (Required): The hash.
+- `size` (Number): Size of artifact in bytes.
+- `filename` (String): The file name (For mods) or maven location (Non-Mods) to save to. Best to use default. Default is `{packagename}-{version}.jar`.
+- `releaseTime` (String): When the version was released. Must use `ISO 8601` date time format.
 
 
 ## (WIP) Modloader Version Extensions
@@ -104,6 +108,14 @@ A Version represents a single artifact, such as a .jar file.
   - `client` (String): Launch arguments for the client only.
   - `server` (String): Launch arguments for the server only.
   - `common` (String): Launch arguments for the client & server.
+- `assetIndex` (Object) (Required):
+  - `id` (String) (Required):
+  - `url` (String) (Required):
+  - `sha1` (String) (Required):
+  - `size` (Number) (Required):
+  - `totalSize` (Number) (Required):
+- `traits` (Array of Strings): Special keys that specify what this version is capable/not capable of, or how it should be launched, such as `no-texturepacks`.
+
 
 ## Extra Information
 ### Mod Type
@@ -149,3 +161,16 @@ Fabric Loader will need a custom script to get all the information required.
 Forge requires alot more than fabric, investigation pending...
 - https://github.com/MinecraftForge/Installer
 - https://github.com/MinecraftForge/InstallerTools
+
+##### How Forge 1.13 Installer works.
+- Read install_profile.json
+- Extract version.json to minecraft versions path
+- Download minecraft jar
+- Download Libraries
+- Run PostProcessing Mess
+  - 1. InstallerTools - MCP_DATA - Download MCP_CONFIG - Extract
+  - 2. JarSplitter - Splits minecraft jar into SLIM and EXTRA jars. Slim contains every class file. Extra contains everything else (assets, data, meta-inf, etc)
+  - 3. InstallerTools - CREATE_PARENTS - Simply creates the folders in library for the unobf client jar
+  - 4. SpecialSource - Takes SLIM jar and srg mappings and deobf the jar and outputs to client-MC_VERSION-SRG_VERSION-srg.jar (placed in folder created in 3.)
+  - 5. BinaryPatcher - Takes the srg jar and a patch file and outputs the forge patched client jar
+- Inject Profile to launcher profiles
