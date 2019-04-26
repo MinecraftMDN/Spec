@@ -1,0 +1,117 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/MinecraftMDN/Spec/master/version.schema.json",
+    "title": "Minecraft MDN Version",
+    "description": "A version inside the MMDN",
+    "type": "object",
+    "required": [
+        "formatVersion",
+        "id",
+        "artifacts",
+        "hashes"
+    ],
+    "properties": {
+        "formatVersion": {
+            "description": "The spec version the file follows. 0 means current working version.",
+            "type": "integer"
+        },
+        "id": {
+            "type": "string"
+        },
+        "releaseType": {
+            "type": "string",
+            "enum": [
+                "release",
+                "beta"
+            ],
+            "default": "release"
+        },
+        "changelog": {
+            "type": "string"
+        },
+        "side": {
+            "type": "string",
+            "enum": [
+                "universal",
+                "client",
+                "server"
+            ],
+            "default": "universal"
+        },
+        "relationships": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            },
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "required",
+                        "recommended",
+                        "suggested",
+                        "conflicts",
+                        "breaks"
+                    ]
+                },
+                "id": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": [
+                        "string",
+                        "array"
+                    ],
+                    "default": "*"
+                }
+            },
+            "required": [
+                "type",
+                "id",
+                "version"
+            ]
+        },
+        "artifacts": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            },
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "side": {
+                    "type": "string",
+                    "enum": [
+                        "common",
+                        "client",
+                        "server"
+                    ],
+                    "default": "common"
+                }
+            },
+            "required": [
+                "type",
+                "id"
+            ]
+        },
+        "hashes": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "size": {
+            "type": "integer"
+        },
+        "filename": {
+            "type": "string"
+        },
+        "releaseTime": {
+            "type": "string"
+        }
+    }
+}

@@ -32,6 +32,7 @@ A Version represents a single artifact, such as a .jar file.
   ##### ProjectLink Object
   - `type` (String) (Required) (IgnoreCase): An identifier that describes the url, such as `Discord` for a discord invite link.
   - `url` (String) (Required): A url that the user can go to. Follows the pattern `todo`.
+  ###### Detectors will be moved to upstream only data
 - `detectors` (Array): An Array of Detector Objects, that contains information on how `Artifacts` could be automatically discovered by a bot that generates `Version` files.
   ##### Detector Object
   - `type` (String) (Required) (IgnoreCase): The identifier of the detector service.
@@ -42,7 +43,8 @@ A Version represents a single artifact, such as a .jar file.
 ###### id.json inside the `Package` folder. Where `id` is the version id.
 
 - `id` (String) (Required): A `Package` unique identifier that identifies this `Version` within the network. Should match the `id` of the file.
-- `releasetype` (String): One of `release` or `beta`.
+- `releaseType` (String): One of `release` or `beta`.
+- `installType` (String): One of `mods` or `jarMod`.
 - `changelog` (String): A url to a changelog file.
 - `side` (String): One of `client`, `server` or `universal`. Default is universal.
 - `relationships` (Array): An Array of Relationship Objects.
@@ -161,6 +163,11 @@ Fabric Loader will need a custom script to get all the information required.
 Forge requires alot more than fabric, investigation pending...
 - https://github.com/MinecraftForge/Installer
 - https://github.com/MinecraftForge/InstallerTools
+- FMLLauncher (https://github.com/MinecraftForge/MinecraftForge/tree/1.13.x/src/fmllauncher) loads the following files:
+  - Requires forge at libraries/net/minecraftforge/forge/1.13.2-25.0.110/forge-1.13.2-25.0.110-universal.jar
+  - Requires patched minecraft at libraries/net/minecraftforge/forge/1.13.2-25.0.110/forge-1.13.2-25.0.110-client.jar
+  - Requires SRG MC at libraries/net/minecraft/client/1.13.2-20190213.203750/client-1.13.2-20190213.203750-srg.jar
+  - Requires MC Extra at libraries/net/minecraft/client/1.13.2/client-1.13.2-srg.jar
 
 ##### How Forge 1.13 Installer works.
 - Read install_profile.json

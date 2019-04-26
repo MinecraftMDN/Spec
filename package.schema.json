@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://raw.githubusercontent.com/MinecraftMDN/Spec/master/package.schema.json",
+    "title": "Minecraft MDN Package",
+    "description": "A package inside the MMDN",
+    "type": "object",
+    "required": [
+        "formatVersion",
+        "id"
+    ],
+    "properties": {
+        "formatVersion": {
+            "description": "The spec version the file follows. 0 means current working version.",
+            "type": "integer"
+        },
+        "type": {
+            "type": "string"
+        },
+        "id": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string",
+            "examples": [
+                "Test1",
+                "Test2"
+            ]
+        },
+        "license": {
+            "type": [
+                "string",
+                "array"
+            ],
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "authors": {
+            "type": [
+                "string",
+                "array"
+            ],
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1
+        },
+        "projectLinks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "examples": [
+                            "website",
+                            "twitter",
+                            "discord"
+                        ]
+                    }
+                },
+                "required": [
+                    "type",
+                    "url"
+                ]
+            }
+        }
+    },
+    "additionalProperties": false,
+    "patternProperties": {
+        "^@.*$": {
+        }
+    }
+}
