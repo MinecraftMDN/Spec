@@ -28,6 +28,7 @@ A Version represents a single artifact, such as a .jar file.
 - `description` (String): A short description on what the `Package` is.
 - `license` (String or Array of Strings): The license identifier(s) the `Package` `Artifacts` are licensed under (Use https://spdx.org/licenses/ to lookup yours).
 - `authors` (Array of Strings): An array of names of people who are considered authors of this `Package`.
+- `icon` (String): A URL to a image that can be shown as a icon.
 - `projectLinks` (Array): An Array of ProjectLink Objects, that contains urls that could be displayed to the user.
   ##### ProjectLink Object
   - `type` (String) (Required) (IgnoreCase): An identifier that describes the url, such as `Discord` for a discord invite link.
@@ -77,6 +78,7 @@ A Version represents a single artifact, such as a .jar file.
   - `id` (String) (Required): Maven ID.
   - `url` (String) (Required): Maven Repository its stored in.
   - `side` (String): Either `client`, `server`, or `common`. Default `common`.
+  - `size` (Number): Size of artifact in bytes.
   - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact. At least one hash MUST be provided. Prefer sha256.
     ##### Hash Object
     - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
@@ -102,6 +104,7 @@ A Version represents a single artifact, such as a .jar file.
   - `id` (String) (Required): Maven ID.
   - `url` (String) (Required): Maven Repository its stored in.
   - `side` (String): Either `client`, `server`, or `common`. Default `common`.
+  - `size` (Number): Size of artifact in bytes.
   - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact. At least one hash MUST be provided. Prefer sha256.
     ##### Hash Object
     - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
@@ -120,7 +123,7 @@ A Version represents a single artifact, such as a .jar file.
 
 
 ## Extra Information
-### Mod Type
+### Package Type
 - `Mod`: The default type. The `Artifact` would be placed in the `mods` folder.
 - `Modloader`: Specifies this is a modloader and uses the `Modloader Version Extensions` spec.
 - `Library` (WIP): If a mod is declared as a Library, then it can only be used by modloaders using the `Libraries` key in the `Modloader Version Extensions` spec.
@@ -150,7 +153,8 @@ maybe something like https://fabricmc.net/wiki/format:modjson#versionrange
 - hash to package+version database (something like "sha256:somehash":"amod:1.0.0")
 - cf slug to package database
 - cf id to package database
-- Remove `discoverers` from the spec and only use for upstream/intermediary usage?
+- Remove `discoverers` from the spec and only use for upstream/intermediary usage
+- Hashes for Version must have server side and client side as well as universal
 
 ##### Fabric
 Fabric is split into three parts:
