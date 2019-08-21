@@ -5,10 +5,11 @@ WORK IN PROGRESS, SPEC VERSION 0.3
 #### Notes
 - All files are JSON files with the `.json` extension.
 - All keys use camelCase, only [a-zA-Z0-9].
-- All values follow the pattern `todo` unless otherwise noted.
+- All values follow the pattern `TODO` unless otherwise noted.
 - All values default to an empty String or 0, unless otherwise noted.
-- All values marked as `Required` are **Required**.
-- All values marked as `IgnoreCase` are checked with `equalsIgnoreCase` or equivalent.
+- All keys marked as `Required` are **Required** to be specified and don't have a default value.
+- All keys marked as `Sided` should be specified under the root object if there no separate client/server artifacts or under the `client/server` key if there are separate client/server artifacts. 
+- All keys marked as `IgnoreCase` are checked with `equalsIgnoreCase` or equivalent.
 - See `Extra Information` for information on preset values.
 
 A Package could represent a Mod, Mod Loader, Library, or anything else that has `artifacts` that could be downloaded, installed or used.
@@ -33,11 +34,6 @@ A Version represents a single artifact, such as a .jar file.
   ##### ProjectLink Object
   - `type` (String) (Required) (IgnoreCase): An identifier that describes the url, such as `Discord` for a discord invite link.
   - `url` (String) (Required): A url that the user can go to. Follows the pattern `todo`.
-  ###### Detectors will be moved to upstream only data
-- `detectors` (Array): An Array of Detector Objects, that contains information on how `Artifacts` could be automatically discovered by a bot that generates `Version` files.
-  ##### Detector Object
-  - `type` (String) (Required) (IgnoreCase): The identifier of the detector service.
-  - `data` (Object) (Required): Service specific data that is used by the service. This is outside the control of this spec.
 
 
 ## Version File
@@ -53,66 +49,47 @@ A Version represents a single artifact, such as a .jar file.
   - `type` (String) (Required) (IgnoreCase): Either `required`, `recommended`, `suggested`, `conflicts`, `breaks`.
   - `id` (String) (Required): The `Package` id.
   - `version` (String or Array of Strings): The version(s) to match. See `Version Match` below for more information.
+  - `side` (String): One of `client`, `server` or `universal`. Default is universal.
 - `artifacts` (Array) (Required): An Array of `Artifact` Objects.
   ##### Artifact Objects
   - `type` (String) (Required) (IgnoreCase): The type of download or download service the `Artifact` can be gotten from, such as `direct` for a direct url download.
   - `id` (String) (Required): The id that identifies the `Artifact` with the service, could be a URL/file id/maven id.
-  - `side` (String): One of `client`/`server`/`common`. Default is `common`.
-- `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact.
-  ##### Hash Object
-  - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
-  - `id` (String) (Required): The hash.
-- `size` (Number): Size of artifact in bytes.
-- `filename` (String): The file name (For mods) or maven location (Non-Mods) to save to. Best to use default. Default is `{packagename}-{version}.jar`.
+  - `side` (String): One of `client`/`server`/`universal`. Default is `universal`.
+- `hashes` (Object) (Required) (Sided): Key is hash type, value is hash. Used to verify downloaded artifact.
+- `size` (Number) (Required) (Sided): Size of artifact in bytes.
+- `filename` (String) (Sided): The file name (For mods) or maven location (Non-Mods) to save to. Best to use default. Default is `{packagename}-{version}.jar`.
+- `client/server` (Object) (Sided): Specifies keys for the specified side.
 - `releaseTime` (String): When the version was released. Must use `ISO 8601` date time format.
 
 
 ## (WIP) Modloader Version Extensions
 ###### Extends Version File. Package MUST have `type` set to `modloader`
-- `mainclass` (Object) (IgnoreCase): 
-  - `common`: Main class used for both client and server.
-  - `client`: Main class used for client only.
-  - `server`: Main class used for server only.
+- `mainClass` (String) (Required) (Sided): Main class used to launch minecraft.
+- `launchargs` (String) (Required) (Sided): Launch arguments used to launch minecraft.
+- `tweakers` (Array of Strings) (Sided): Tweakers for minecraft.
 - `libraries` (Array): Array of `Library` Objects.
   ##### Library Object
+  - `type` (String) (Required): Type of Library. Such as `jar`, `natives-windows`.
   - `id` (String) (Required): Maven ID.
   - `url` (String) (Required): Maven Repository its stored in.
   - `side` (String): Either `client`, `server`, or `common`. Default `common`.
   - `size` (Number): Size of artifact in bytes.
-  - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact. At least one hash MUST be provided. Prefer sha256.
-    ##### Hash Object
-    - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
-    - `id` (String) (Required): The hash.
-- `launchargs` (Object):
-  - `client` (String): Launch arguments for the client only.
-  - `server` (String): Launch arguments for the server only.
-  - `common` (String): Launch arguments for the client & server.
-- `tweakers` (Object):
-  - `client` (Array of Strings): Tweakers for the client only.
-  - `server` (Array of Strings): Tweakers for the server only.
-  - `common` (Array of Strings): Tweakers for the client & server.
+  - `hashes` (Object) (Required): Key is hash type, value is hash. Used to verify downloaded artifact.
 
-## (WIP) Minecraft Version Extensions
+
+## Minecraft Version Extensions
 ###### Extends Version File. Package MUST have `type` set to `minecraft`.
 - `releasetype` (String): One of `release`, `snapshot`, `beta`, `alpha`.
-- `mainclass` (Object) (IgnoreCase): 
-  - `common`: Main class used for both client and server.
-  - `client`: Main class used for client only.
-  - `server`: Main class used for server only.
+- `mainClass` (String) (Required) (Sided): Main class used to launch minecraft.
+- `launchargs` (String) (Required) (Sided): Launch arguments used to launch minecraft.
 - `libraries` (Array): Array of `Library` Objects.
   ##### Library Object
+  - `type` (String) (Required): Type of Library. Such as `jar`, `natives-windows`.
   - `id` (String) (Required): Maven ID.
   - `url` (String) (Required): Maven Repository its stored in.
   - `side` (String): Either `client`, `server`, or `common`. Default `common`.
   - `size` (Number): Size of artifact in bytes.
-  - `hashes` (Array) (Required): An Array of Hash Objects, used to verify downloaded artifact. At least one hash MUST be provided. Prefer sha256.
-    ##### Hash Object
-    - `type` (String) (Required) (IgnoreCase): The type of hash the hash is, for example `sha256`.
-    - `id` (String) (Required): The hash.
-- `launchargs` (Object):
-  - `client` (String): Launch arguments for the client only.
-  - `server` (String): Launch arguments for the server only.
-  - `common` (String): Launch arguments for the client & server.
+  - `hashes` (Object) (Required): Key is hash type, value is hash. Used to verify downloaded artifact.
 - `assetIndex` (Object) (Required):
   - `id` (String) (Required):
   - `url` (String) (Required):
@@ -126,9 +103,10 @@ A Version represents a single artifact, such as a .jar file.
 ### Package Type
 - `Mod`: The default type. The `Artifact` would be placed in the `mods` folder.
 - `Modloader`: Specifies this is a modloader and uses the `Modloader Version Extensions` spec.
-- `Library` (WIP): If a mod is declared as a Library, then it can only be used by modloaders using the `Libraries` key in the `Modloader Version Extensions` spec.
+- `Library`: If a mod is declared as a Library, then it can only be used by modloaders using the `Libraries` key in the `Modloader Version Extensions` spec.
+             It would allow the user to select a different version, but CANNOT be installed manually.
 - `Minecraft`: Only used by Minecraft files.
-It would allow the user to select a different version, but CANNOT be installed manually.
+- `Modpack`: Used for modpacks.
 
 ### Relationship Management
 There are 5 types of relationships a `Package` can have.
